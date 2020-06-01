@@ -4,9 +4,8 @@
 var apples = [];
 
 var circle = new Path.Circle(new Point(view.size.width, view.size.height) * Point.random(), 15);
-circle.fillColor = "green";
 
-this.circleSpeed = 3 + 10 * Math.random();
+circle.fillColor = "green";
 
 // The amount of points in the path:
 var points = 5;
@@ -47,27 +46,31 @@ function onMouseUp(event) {
 }
 
 function onFrame(event) {
-	circle.translate(this.circleSpeed,0);
+	circle.translate(5,0);
 
+	for (var i = 0; i < apples.length; i++) {
+		apples[i].translate(8,0);
+		if (apples[i].position.x > view.size.width) {
+			apples[i].position.x = -10;
+			apples[i].position.y = view.size.height * Math.random();
+		}
+	}
+	
 	if (circle.position.x > view.size.width) {
 		circle.position.x = -10;
 		circle.position.y = view.size.height * Math.random();
 	}
 
 	if (path.intersects(circle)) {
+		var dots = new Path.Circle(new Point(view.size.width, view.size.height) * Point.random(), 3);
+		apples.push(dots);
+		dots.fillColor = "white";
+
 		var newPoint = path.add(this.start + new Point(i * length, 0));
 		newPoint.style = { strokeColor: 'white'};
 		points += 1;
 		circle.position.x = -10;
 		circle.position.y = view.size.height * Math.random();
 		this.circleSpeed = 10 * Math.random();
-	}
-
-	if (path.intersects(path)) {
-		path.removeSegments();
-		points = 5;
-		this.start = view.center / [10, 1];
-		for (var i = 0; i < points; i++)
-			path.add(this.start + new Point(i * length, 0));
 	}
 }
